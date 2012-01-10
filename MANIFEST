@@ -1,0 +1,8 @@
+Changes
+lib/HeliosX/Logger/File.pm
+LICENSE
+Makefile.PL
+MANIFEST
+README
+t/HeliosX-Logger-File.t
+META.yml                                 Module meta-data (added by MakeMaker)
