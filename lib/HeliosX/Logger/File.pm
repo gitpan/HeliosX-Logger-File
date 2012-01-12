@@ -7,9 +7,9 @@ use base 'Helios::Logger';
 use File::Spec;
 
 use Helios::LogEntry::Levels ':all';
-use Helios::Error::LoggingError;
+use Helios::Error;
 
-our $VERSION = '0.01_0221';
+our $VERSION = '0.01_0232';
 
 our $LogFH;
 our $LogFilename;
@@ -25,30 +25,37 @@ sub init {
 	# open the file
 	$LogFilename = File::Spec->catfile($c->{logfile_path},$$.'.log'); 
 	open($LogFH, '>>', $LogFilename) 
-		or Helios::Error::LoggingError->throw('open() failed: '.$!); 
+		or Helios::Error::LoggingError->throw("Failed to open() '$LogFilename': ".$!); 
 	
 }
 
 
 sub logMsg {
 	my $self = shift;
-	my $job = shift;
-	my $priority = shift;
-	my $message = shift;
+	my $j = shift;
+	my $p = shift;
+	my $m = shift;
 	my $c = $self->getConfig();
 	
-	if ( defined($c->{logfile_threshold})
-		&& ($priority > $c->{logfile_threshold}) )
+	if ( defined($c->{logfile_priority_threshold})
+		&& ($p > $c->{logfile_priority_threshold}) )
 	{
 		return 0;
 	}
 	
-	print $LogFH $self->assembleMsg($job, $priority, $message),"\n";
+	print $LogFH $self->assembleMsg($j,$p,$m),"\n";
 }
 
 
 sub assembleMsg {
-	return scalar(localtime()).' '.$_[0]->getJobType().' Job '.$_[1]->getJobid().' '.$_[3];
+	my ($self, $j, $p, $m) = @_;
+    if ( defined($j) ) { 
+		return '['.scalar(localtime()).'] ['.$p.'] ['.$self->getJobType().'] [Job '.$j->getJobid().'] '.$m;
+    } else {
+		return '['.scalar(localtime()).'] ['.$p.'] ['.$self->getJobType().'] '.$m;
+    }
+
+
 }
 
 

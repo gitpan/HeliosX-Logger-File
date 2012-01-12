@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               HeliosX-Logger-File
-version:            0.01_0221
+version:            0.01_0232
 abstract:           Helios::Logger to log to a file on disk
 author:
     - Andrew Johnson <lajandy at cpan dotorg>
